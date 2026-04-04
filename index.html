@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050505" />
   <title>MOTION // BOARD</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
@@ -11,17 +12,20 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #050505;
-      --surface:  #0b0b0b;
-      --line:     #161616;
-      --line-hi:  #222;
-      --text:     #ededed;
-      --dim:      #3a3a3a;
-      --muted:    #555;
-      --gold:     #c9a84c;
-      --silver:   #8a8a8a;
-      --bronze:   #7a4a2a;
-      --green:    #3ddc84;
+      --bg:      #050505;
+      --line:    #161616;
+      --line-hi: #222;
+      --text:    #ededed;
+      --dim:     #3a3a3a;
+      --muted:   #555;
+      --gold:    #c9a84c;
+      --silver:  #8a8a8a;
+      --bronze:  #7a4a2a;
+      --green:   #3ddc84;
+
+      /* Fluid spacing */
+      --pad-x: clamp(20px, 5vw, 48px);
+      --pad-y: clamp(36px, 6vw, 64px);
     }
 
     html { font-size: 16px; }
@@ -31,13 +35,13 @@
       color: var(--text);
       font-family: 'Space Mono', monospace;
       min-height: 100vh;
+      min-height: 100dvh;
       -webkit-font-smoothing: antialiased;
-      /* Subtle grain texture */
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      -moz-osx-font-smoothing: grayscale;
+      /* Grain */
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
       background-size: 200px 200px;
     }
-
-    /* Darken the grain so it's just a texture hint */
     body::before {
       content: '';
       position: fixed;
@@ -48,37 +52,43 @@
       z-index: 0;
     }
 
+    /* ── LAYOUT ─────────────────────────────────── */
     .wrap {
       position: relative;
       z-index: 1;
-      max-width: 760px;
+      max-width: 860px;
       margin: 0 auto;
-      padding: 56px 28px 100px;
+      padding: var(--pad-y) var(--pad-x);
+      /* Notch / safe area support */
+      padding-left: max(var(--pad-x), env(safe-area-inset-left));
+      padding-right: max(var(--pad-x), env(safe-area-inset-right));
+      padding-bottom: max(80px, env(safe-area-inset-bottom));
     }
 
-    /* ─── HEADER ─────────────────────────────────── */
+    /* ── HEADER ─────────────────────────────────── */
     .hdr {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      margin-bottom: 60px;
+      gap: 16px;
+      margin-bottom: clamp(40px, 6vw, 64px);
     }
 
     .logo {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 42px;
+      font-size: clamp(30px, 6vw, 48px);
       letter-spacing: 0.06em;
       line-height: 1;
       color: var(--text);
     }
-    .logo .slash {
-      color: var(--dim);
-      margin: 0 6px;
-    }
+    .logo .slash { color: var(--dim); margin: 0 6px; }
     .logo .sub {
-      font-size: 16px;
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(9px, 1.4vw, 12px);
       color: var(--muted);
       letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-top: 5px;
     }
 
     .hdr-right {
@@ -86,22 +96,22 @@
       flex-direction: column;
       align-items: flex-end;
       gap: 8px;
-      padding-top: 4px;
+      flex-shrink: 0;
+      padding-top: 2px;
     }
 
     .status-row {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 10px;
+      font-size: clamp(9px, 1.2vw, 11px);
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--muted);
     }
 
     .dot {
-      width: 7px;
-      height: 7px;
+      width: 7px; height: 7px;
       border-radius: 50%;
       background: var(--dim);
       flex-shrink: 0;
@@ -111,7 +121,6 @@
       box-shadow: 0 0 10px var(--green);
       animation: blink 2.4s ease-in-out infinite;
     }
-
     @keyframes blink {
       0%, 100% { opacity: 1; }
       50%       { opacity: 0.3; }
@@ -119,37 +128,37 @@
 
     .refresh-btn {
       font-family: 'Space Mono', monospace;
-      font-size: 10px;
+      font-size: clamp(9px, 1.2vw, 10px);
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--dim);
       background: none;
       border: 1px solid var(--line-hi);
       cursor: pointer;
-      padding: 5px 10px;
+      padding: 6px 12px;
       border-radius: 3px;
       transition: all 0.15s;
+      /* Larger tap target on touch */
+      min-height: 36px;
+      touch-action: manipulation;
     }
-    .refresh-btn:hover { color: var(--muted); border-color: var(--muted); }
+    .refresh-btn:hover  { color: var(--muted); border-color: var(--muted); }
+    .refresh-btn:active { opacity: 0.6; }
 
-    /* ─── CONTROLS ───────────────────────────────── */
-    .controls {
-      margin-bottom: 48px;
-    }
+    /* ── CONTROLS ───────────────────────────────── */
+    .controls { margin-bottom: clamp(36px, 5vw, 52px); }
 
     .metric-wrap {
-      display: flex;
-      gap: 0;
-      margin-bottom: 20px;
+      display: inline-flex;
+      margin-bottom: 18px;
       border: 1px solid var(--line-hi);
       border-radius: 4px;
-      width: fit-content;
       overflow: hidden;
     }
 
     .metric-btn {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 18px;
+      font-size: clamp(16px, 2.5vw, 20px);
       letter-spacing: 0.12em;
       color: var(--muted);
       background: none;
@@ -158,40 +167,67 @@
       cursor: pointer;
       padding: 9px 28px 6px;
       transition: all 0.15s;
+      min-height: 44px;
+      touch-action: manipulation;
     }
     .metric-btn:last-child { border-right: none; }
     .metric-btn:hover { color: var(--silver); }
-    .metric-btn.on {
-      background: var(--text);
-      color: var(--bg);
-    }
+    .metric-btn.on { background: var(--text); color: var(--bg); }
 
+    /* Horizontal scroll on mobile, wrap on larger */
     .period-wrap {
       display: flex;
-      flex-wrap: wrap;
       gap: 6px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 4px; /* room for scrollbar on some browsers */
+    }
+    .period-wrap::-webkit-scrollbar { display: none; }
+
+    /* Fade edges to hint scrollability */
+    .period-outer {
+      position: relative;
+    }
+    .period-outer::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 0; bottom: 4px;
+      width: 32px;
+      background: linear-gradient(90deg, transparent, var(--bg));
+      pointer-events: none;
     }
 
     .period-btn {
       font-family: 'Space Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.08em;
+      font-size: clamp(9px, 1.3vw, 11px);
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--muted);
       background: none;
       border: 1px solid var(--line);
       cursor: pointer;
-      padding: 7px 14px;
+      padding: 8px 14px;
       border-radius: 100px;
       transition: all 0.15s;
       white-space: nowrap;
+      flex-shrink: 0;
+      min-height: 36px;
+      touch-action: manipulation;
     }
-    .period-btn:hover { border-color: var(--line-hi); color: var(--silver); }
-    .period-btn.on { border-color: rgba(237,237,237,0.35); color: var(--text); }
+    .period-btn:hover  { border-color: var(--line-hi); color: var(--silver); }
+    .period-btn:active { opacity: 0.6; }
+    .period-btn.on     { border-color: rgba(237,237,237,0.35); color: var(--text); }
 
-    /* ─── BOARD ──────────────────────────────────── */
+    /* On larger screens, allow wrapping */
+    @media (min-width: 600px) {
+      .period-wrap { flex-wrap: wrap; overflow-x: visible; }
+      .period-outer::after { display: none; }
+    }
+
+    /* ── BOARD ──────────────────────────────────── */
     .section-label {
-      font-size: 9px;
+      font-size: clamp(8px, 1.1vw, 10px);
       letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--dim);
@@ -200,82 +236,35 @@
 
     .board { display: flex; flex-direction: column; }
 
-    /* hairline divider */
-    .divider {
-      height: 1px;
-      background: var(--line);
-    }
+    .divider { height: 1px; background: var(--line); }
 
     .row {
       display: grid;
-      grid-template-columns: 52px 1fr 72px;
+      grid-template-columns: clamp(36px, 6vw, 56px) 1fr clamp(52px, 8vw, 80px);
       align-items: center;
-      gap: 16px;
-      padding: 20px 0;
+      gap: clamp(12px, 2.5vw, 20px);
+      padding: clamp(16px, 2.5vw, 22px) 0;
       position: relative;
       overflow: hidden;
       animation: slideIn 0.3s ease both;
     }
-
     @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-10px); }
+      from { opacity: 0; transform: translateX(-8px); }
       to   { opacity: 1; transform: translateX(0); }
     }
 
-    /* background heat bar */
+    /* Heat bar */
     .row::before {
       content: '';
       position: absolute;
       left: 0; top: 0; bottom: 0;
       width: var(--pct, 0%);
-      background: linear-gradient(90deg, rgba(255,255,255,0.035) 0%, transparent 100%);
+      background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, transparent 100%);
       transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
       pointer-events: none;
     }
 
-    .row-rank {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 32px;
-      letter-spacing: 0.04em;
-      color: var(--dim);
-      text-align: center;
-      line-height: 1;
-      position: relative;
-      z-index: 1;
-      transition: color 0.2s;
-    }
-    .row.r1 .row-rank { color: var(--gold); }
-    .row.r2 .row-rank { color: var(--silver); }
-    .row.r3 .row-rank { color: var(--bronze); }
-
-    .row-info {
-      position: relative;
-      z-index: 1;
-    }
-    .row-name {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 22px;
-      letter-spacing: 0.1em;
-      color: var(--text);
-      line-height: 1;
-    }
-
-    .row-count {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 42px;
-      letter-spacing: -0.01em;
-      color: var(--muted);
-      text-align: right;
-      line-height: 1;
-      position: relative;
-      z-index: 1;
-      font-variant-numeric: tabular-nums;
-    }
-    .row.r1 .row-count { color: var(--gold); }
-    .row.r2 .row-count { color: var(--silver); }
-    .row.r3 .row-count { color: var(--bronze); }
-
-    /* Accent line on left for top 3 */
+    /* Top 3 left accent */
     .row.r1::after,
     .row.r2::after,
     .row.r3::after {
@@ -289,9 +278,54 @@
     .row.r2::after { background: var(--silver); }
     .row.r3::after { background: var(--bronze); }
 
-    /* ─── STATE MESSAGES ─────────────────────────── */
+    .row-rank {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(24px, 4vw, 36px);
+      letter-spacing: 0.04em;
+      color: var(--dim);
+      text-align: center;
+      line-height: 1;
+      position: relative;
+      z-index: 1;
+    }
+    .row.r1 .row-rank { color: var(--gold); }
+    .row.r2 .row-rank { color: var(--silver); }
+    .row.r3 .row-rank { color: var(--bronze); }
+
+    .row-info {
+      position: relative;
+      z-index: 1;
+      min-width: 0; /* prevent overflow */
+    }
+    .row-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(18px, 3.5vw, 26px);
+      letter-spacing: 0.08em;
+      color: var(--text);
+      line-height: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .row-count {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(32px, 6vw, 48px);
+      letter-spacing: -0.01em;
+      color: var(--muted);
+      text-align: right;
+      line-height: 1;
+      position: relative;
+      z-index: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .row.r1 .row-count { color: var(--gold); }
+    .row.r2 .row-count { color: var(--silver); }
+    .row.r3 .row-count { color: var(--bronze); }
+
+    /* ── STATE ──────────────────────────────────── */
     .msg {
-      padding: 80px 0;
+      padding: clamp(48px, 8vw, 80px) 0;
       text-align: center;
       font-size: 11px;
       letter-spacing: 0.18em;
@@ -299,31 +333,24 @@
       color: var(--dim);
     }
 
-    /* ─── FOOTER ─────────────────────────────────── */
+    /* ── FOOTER ─────────────────────────────────── */
     .footer {
-      margin-top: 60px;
-      font-size: 9px;
+      margin-top: clamp(40px, 6vw, 64px);
+      font-size: clamp(8px, 1.1vw, 10px);
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--dim);
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-
-    @media (max-width: 520px) {
-      .logo { font-size: 32px; }
-      .hdr  { flex-direction: column; gap: 16px; }
-      .hdr-right { align-items: flex-start; }
-      .row-count { font-size: 32px; }
-      .wrap { padding: 36px 20px 80px; }
+      flex-wrap: wrap;
+      gap: 8px;
     }
   </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- HEADER -->
   <div class="hdr">
     <div class="logo">
       MOTION<span class="slash">//</span>BOARD
@@ -334,53 +361,49 @@
         <div class="dot" id="dot"></div>
         <span id="statusTxt">—</span>
       </div>
-      <button class="refresh-btn" onclick="load(true)">↻ Refresh</button>
+      <button class="refresh-btn" onclick="load()">↻ Refresh</button>
     </div>
   </div>
 
-  <!-- CONTROLS -->
   <div class="controls">
     <div class="metric-wrap">
       <button class="metric-btn on" onclick="setMetric('sales',this)">Sales</button>
       <button class="metric-btn"    onclick="setMetric('installs',this)">Installs</button>
     </div>
-    <div class="period-wrap">
-      <button class="period-btn"    onclick="setPeriod('today',this)">Today</button>
-      <button class="period-btn"    onclick="setPeriod('yesterday',this)">Yesterday</button>
-      <button class="period-btn on" onclick="setPeriod('this-week',this)">This Week</button>
-      <button class="period-btn"    onclick="setPeriod('last-week',this)">Last Week</button>
-      <button class="period-btn"    onclick="setPeriod('this-month',this)">This Month</button>
-      <button class="period-btn"    onclick="setPeriod('last-month',this)">Last Month</button>
-      <button class="period-btn"    onclick="setPeriod('this-year',this)">This Year</button>
+    <div class="period-outer">
+      <div class="period-wrap">
+        <button class="period-btn"    onclick="setPeriod('today',this)">Today</button>
+        <button class="period-btn"    onclick="setPeriod('yesterday',this)">Yesterday</button>
+        <button class="period-btn on" onclick="setPeriod('this-week',this)">This Week</button>
+        <button class="period-btn"    onclick="setPeriod('last-week',this)">Last Week</button>
+        <button class="period-btn"    onclick="setPeriod('this-month',this)">This Month</button>
+        <button class="period-btn"    onclick="setPeriod('last-month',this)">Last Month</button>
+        <button class="period-btn"    onclick="setPeriod('this-year',this)">This Year</button>
+      </div>
     </div>
   </div>
 
-  <!-- BOARD -->
   <div class="section-label" id="boardLabel">— Rankings</div>
   <div class="board" id="board">
     <div class="divider"></div>
     <div class="msg">Loading...</div>
   </div>
 
-  <!-- FOOTER -->
   <div class="footer">
     <span>McLean Marketing LLC</span>
     <span id="footerTime"></span>
   </div>
 
 </div>
-
 <script>
 // ── CONFIG ────────────────────────────────────────────────────
-const GAS_URL  = 'https://script.google.com/macros/s/AKfycbwNxbZpAMujaCCV1ppqGKE-1azpK-vXembm9w_VOH5cvpoIG_yisVTjYTK7V6Um9GJFNg/exec';
-const CACHE_MS = 60 * 60 * 1000; // 1 hour cache
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwNxbZpAMujaCCV1ppqGKE-1azpK-vXembm9w_VOH5cvpoIG_yisVTjYTK7V6Um9GJFNg/exec';
 // ─────────────────────────────────────────────────────────────
 
 let rawData = null;
 let metric  = 'sales';
 let period  = 'this-week';
 
-// ── DATE UTILITIES ────────────────────────────────────────────
 function sub(d, n) { const x = new Date(d); x.setDate(x.getDate() - n); return x; }
 function add(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
 
@@ -389,8 +412,8 @@ function dateRange(p) {
   const t   = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   let s, e;
   switch (p) {
-    case 'today':      s = e = t;           break;
-    case 'yesterday':  s = e = sub(t, 1);   break;
+    case 'today':      s = e = t;         break;
+    case 'yesterday':  s = e = sub(t,1);  break;
     case 'this-week': {
       const wd = t.getDay();
       s = sub(t, wd === 0 ? 6 : wd - 1);
@@ -398,7 +421,7 @@ function dateRange(p) {
       break;
     }
     case 'last-week': {
-      const wd = t.getDay();
+      const wd  = t.getDay();
       const mon = sub(t, wd === 0 ? 6 : wd - 1);
       s = sub(mon, 7); e = sub(mon, 1);
       break;
@@ -427,7 +450,6 @@ function inRange(str, s, e) {
   return day >= s && day <= e;
 }
 
-// ── COMPUTE ───────────────────────────────────────────────────
 function compute() {
   if (!rawData) return [];
   const [s, e] = dateRange(period);
@@ -442,87 +464,55 @@ function compute() {
     .sort((a, b) => b.count - a.count);
 }
 
-// ── RENDER ────────────────────────────────────────────────────
-const PERIOD_LABELS = {
-  'today':      'Today',
-  'yesterday':  'Yesterday',
-  'this-week':  'This Week',
-  'last-week':  'Last Week',
-  'this-month': 'This Month',
-  'last-month': 'Last Month',
-  'this-year':  'This Year'
+const LABELS = {
+  'today':'Today','yesterday':'Yesterday','this-week':'This Week',
+  'last-week':'Last Week','this-month':'This Month',
+  'last-month':'Last Month','this-year':'This Year'
 };
 
 function render() {
   const board = document.getElementById('board');
   const label = document.getElementById('boardLabel');
-
   if (!rawData) {
     board.innerHTML = '<div class="divider"></div><div class="msg">Loading...</div>';
     return;
   }
-
   const rows = compute();
-  const metricLabel = metric === 'sales' ? 'Sales' : 'Installs';
-  label.textContent = `— ${PERIOD_LABELS[period]} · ${metricLabel}`;
-
+  label.textContent = `— ${LABELS[period]} · ${metric === 'sales' ? 'Sales' : 'Installs'}`;
   if (!rows.length) {
     board.innerHTML = '<div class="divider"></div><div class="msg">No data for this period</div>';
     return;
   }
-
   const max = rows[0].count;
   board.innerHTML = rows.map((r, i) => {
-    const rank   = i + 1;
-    const cls    = rank <= 3 ? ` r${rank}` : '';
-    const pct    = Math.round((r.count / max) * 100);
-    const delay  = i * 50;
-    const rankTxt = String(rank).padStart(2, '0');
+    const rank = i + 1;
+    const cls  = rank <= 3 ? ` r${rank}` : '';
+    const pct  = Math.round((r.count / max) * 100);
     return `
       <div class="divider"></div>
-      <div class="row${cls}" style="--pct:${pct}%;animation-delay:${delay}ms">
-        <div class="row-rank">${rankTxt}</div>
-        <div class="row-info">
-          <div class="row-name">${r.rep}</div>
-        </div>
+      <div class="row${cls}" style="--pct:${pct}%;animation-delay:${i*50}ms">
+        <div class="row-rank">${String(rank).padStart(2,'0')}</div>
+        <div class="row-info"><div class="row-name">${r.rep}</div></div>
         <div class="row-count">${r.count}</div>
       </div>`;
   }).join('') + '<div class="divider"></div>';
 }
 
-// ── LOAD ──────────────────────────────────────────────────────
-async function load(force = false) {
+async function load() {
   const dot = document.getElementById('dot');
   const txt = document.getElementById('statusTxt');
   dot.className = 'dot';
   txt.textContent = 'Loading...';
-
-  if (!force) {
-    try {
-      const c = JSON.parse(localStorage.getItem('mb_v2') || 'null');
-      if (c && Date.now() - c.ts < CACHE_MS) {
-        rawData = c.d;
-        dot.className = 'dot live';
-        txt.textContent = ago(c.ts);
-        setFooterTime(c.ts);
-        render();
-        return;
-      }
-    } catch (_) {}
-  }
-
-  render(); // show loading state
-
+  render();
   try {
     const res  = await fetch(GAS_URL + '?cb=' + Date.now());
     const json = await res.json();
-    if (!json.ok) throw new Error(json.error || 'Script error');
+    if (!json.ok) throw new Error(json.error || 'Error');
     rawData = json;
-    const ts = Date.now();
-    localStorage.setItem('mb_v2', JSON.stringify({ d: json, ts }));
     dot.className = 'dot live';
     txt.textContent = 'Live';
-    setFooterTime(ts);
+    document.getElementById('footerTime').textContent =
+      'Updated ' + new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
     render();
   } catch (err) {
     dot.className = 'dot';
@@ -533,19 +523,6 @@ async function load(force = false) {
   }
 }
 
-function ago(ts) {
-  const m = Math.floor((Date.now() - ts) / 60000);
-  if (m < 1)  return 'Just updated';
-  if (m < 60) return m + 'm ago';
-  return Math.floor(m / 60) + 'h ago';
-}
-
-function setFooterTime(ts) {
-  document.getElementById('footerTime').textContent =
-    'Updated ' + new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
-
-// ── CONTROLS ─────────────────────────────────────────────────
 function setMetric(m, el) {
   metric = m;
   document.querySelectorAll('.metric-btn').forEach(b => b.classList.remove('on'));
@@ -560,7 +537,6 @@ function setPeriod(p, el) {
   render();
 }
 
-// ── INIT ─────────────────────────────────────────────────────
 load();
 </script>
 </body>
