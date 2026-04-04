@@ -22,8 +22,6 @@
       --silver:  #8a8a8a;
       --bronze:  #7a4a2a;
       --green:   #3ddc84;
-
-      /* Fluid spacing */
       --pad-x: clamp(20px, 5vw, 48px);
       --pad-y: clamp(36px, 6vw, 64px);
     }
@@ -38,7 +36,6 @@
       min-height: 100dvh;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      /* Grain */
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
       background-size: 200px 200px;
     }
@@ -52,14 +49,12 @@
       z-index: 0;
     }
 
-    /* ── LAYOUT ─────────────────────────────────── */
     .wrap {
       position: relative;
       z-index: 1;
       max-width: 860px;
       margin: 0 auto;
       padding: var(--pad-y) var(--pad-x);
-      /* Notch / safe area support */
       padding-left: max(var(--pad-x), env(safe-area-inset-left));
       padding-right: max(var(--pad-x), env(safe-area-inset-right));
       padding-bottom: max(80px, env(safe-area-inset-bottom));
@@ -138,7 +133,6 @@
       padding: 6px 12px;
       border-radius: 3px;
       transition: all 0.15s;
-      /* Larger tap target on touch */
       min-height: 36px;
       touch-action: manipulation;
     }
@@ -174,21 +168,7 @@
     .metric-btn:hover { color: var(--silver); }
     .metric-btn.on { background: var(--text); color: var(--bg); }
 
-    /* Horizontal scroll on mobile, wrap on larger */
-    .period-wrap {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      padding-bottom: 4px; /* room for scrollbar on some browsers */
-    }
-    .period-wrap::-webkit-scrollbar { display: none; }
-
-    /* Fade edges to hint scrollability */
-    .period-outer {
-      position: relative;
-    }
+    .period-outer { position: relative; }
     .period-outer::after {
       content: '';
       position: absolute;
@@ -196,6 +176,21 @@
       width: 32px;
       background: linear-gradient(90deg, transparent, var(--bg));
       pointer-events: none;
+    }
+
+    .period-wrap {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 4px;
+    }
+    .period-wrap::-webkit-scrollbar { display: none; }
+
+    @media (min-width: 600px) {
+      .period-wrap { flex-wrap: wrap; overflow-x: visible; }
+      .period-outer::after { display: none; }
     }
 
     .period-btn {
@@ -219,23 +214,22 @@
     .period-btn:active { opacity: 0.6; }
     .period-btn.on     { border-color: rgba(237,237,237,0.35); color: var(--text); }
 
-    /* On larger screens, allow wrapping */
-    @media (min-width: 600px) {
-      .period-wrap { flex-wrap: wrap; overflow-x: visible; }
-      .period-outer::after { display: none; }
-    }
-
-    /* ── BOARD ──────────────────────────────────── */
+    /* ── BOARD LABEL ────────────────────────────── */
     .section-label {
       font-size: clamp(8px, 1.1vw, 10px);
-      letter-spacing: 0.22em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--dim);
       margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 6px;
     }
+    .section-label .sep { color: var(--line-hi); }
+    .section-label .date-range { color: var(--muted); }
 
+    /* ── BOARD ──────────────────────────────────── */
     .board { display: flex; flex-direction: column; }
-
     .divider { height: 1px; background: var(--line); }
 
     .row {
@@ -253,7 +247,6 @@
       to   { opacity: 1; transform: translateX(0); }
     }
 
-    /* Heat bar */
     .row::before {
       content: '';
       position: absolute;
@@ -264,7 +257,6 @@
       pointer-events: none;
     }
 
-    /* Top 3 left accent */
     .row.r1::after,
     .row.r2::after,
     .row.r3::after {
@@ -292,11 +284,7 @@
     .row.r2 .row-rank { color: var(--silver); }
     .row.r3 .row-rank { color: var(--bronze); }
 
-    .row-info {
-      position: relative;
-      z-index: 1;
-      min-width: 0; /* prevent overflow */
-    }
+    .row-info { position: relative; z-index: 1; min-width: 0; }
     .row-name {
       font-family: 'Bebas Neue', sans-serif;
       font-size: clamp(18px, 3.5vw, 26px);
@@ -335,14 +323,30 @@
 
     /* ── FOOTER ─────────────────────────────────── */
     .footer {
-      margin-top: clamp(40px, 6vw, 64px);
+      margin-top: clamp(48px, 7vw, 72px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .footer-logo {
+      width: clamp(100px, 22vw, 160px);
+      opacity: 0.55;
+      filter: brightness(0) invert(1);
+      transition: opacity 0.2s;
+    }
+    .footer-logo:hover { opacity: 0.75; }
+
+    .footer-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
       font-size: clamp(8px, 1.1vw, 10px);
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--dim);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       flex-wrap: wrap;
       gap: 8px;
     }
@@ -383,22 +387,23 @@
     </div>
   </div>
 
-  <div class="section-label" id="boardLabel">— Rankings</div>
+  <div class="section-label" id="boardLabel"></div>
   <div class="board" id="board">
     <div class="divider"></div>
     <div class="msg">Loading...</div>
   </div>
 
   <div class="footer">
-    <span>McLean Marketing LLC</span>
-    <span id="footerTime"></span>
+    <img src="./logo.png" alt="Motion Marketing" class="footer-logo" />
+    <div class="footer-meta">
+      <span>Motion Marketing</span>
+      <span id="footerTime"></span>
+    </div>
   </div>
 
 </div>
 <script>
-// ── CONFIG ────────────────────────────────────────────────────
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbwNxbZpAMujaCCV1ppqGKE-1azpK-vXembm9w_VOH5cvpoIG_yisVTjYTK7V6Um9GJFNg/exec';
-// ─────────────────────────────────────────────────────────────
 
 let rawData = null;
 let metric  = 'sales';
@@ -450,6 +455,29 @@ function inRange(str, s, e) {
   return day >= s && day <= e;
 }
 
+function fmtDate(d) {
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function dateLabel(p) {
+  const [s, e] = dateRange(p);
+  if (s.getTime() === e.getTime()) return fmtDate(s);
+  // same month
+  if (s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear()) {
+    return s.toLocaleDateString('en-US', { month: 'short' }) + ' ' + s.getDate() + '–' + e.getDate();
+  }
+  if (p === 'this-year' || p === 'last-year') {
+    return s.getFullYear().toString();
+  }
+  return fmtDate(s) + ' – ' + fmtDate(e);
+}
+
+const LABELS = {
+  'today':'Today','yesterday':'Yesterday','this-week':'This Week',
+  'last-week':'Last Week','this-month':'This Month',
+  'last-month':'Last Month','this-year':'This Year'
+};
+
 function compute() {
   if (!rawData) return [];
   const [s, e] = dateRange(period);
@@ -464,21 +492,24 @@ function compute() {
     .sort((a, b) => b.count - a.count);
 }
 
-const LABELS = {
-  'today':'Today','yesterday':'Yesterday','this-week':'This Week',
-  'last-week':'Last Week','this-month':'This Month',
-  'last-month':'Last Month','this-year':'This Year'
-};
-
 function render() {
   const board = document.getElementById('board');
   const label = document.getElementById('boardLabel');
+
+  const metricLabel = metric === 'sales' ? 'Sales' : 'Installs';
+  const dl = dateLabel(period);
+  label.innerHTML = `
+    <span>${LABELS[period]}</span>
+    <span class="sep">·</span>
+    <span>${metricLabel}</span>
+    <span class="sep">·</span>
+    <span class="date-range">${dl}</span>`;
+
   if (!rawData) {
     board.innerHTML = '<div class="divider"></div><div class="msg">Loading...</div>';
     return;
   }
   const rows = compute();
-  label.textContent = `— ${LABELS[period]} · ${metric === 'sales' ? 'Sales' : 'Installs'}`;
   if (!rows.length) {
     board.innerHTML = '<div class="divider"></div><div class="msg">No data for this period</div>';
     return;
