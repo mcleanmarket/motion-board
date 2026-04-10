@@ -360,9 +360,9 @@
     </div>
     <div class="period-outer">
       <div class="period-wrap">
-        <button class="period-btn"    onclick="setPeriod('today',this)">Today</button>
+        <button class="period-btn on" onclick="setPeriod('today',this)">Today</button>
         <button class="period-btn"    onclick="setPeriod('yesterday',this)">Yesterday</button>
-        <button class="period-btn on" onclick="setPeriod('this-week',this)">This Week</button>
+        <button class="period-btn"    onclick="setPeriod('this-week',this)">This Week</button>
         <button class="period-btn"    onclick="setPeriod('last-week',this)">Last Week</button>
         <button class="period-btn"    onclick="setPeriod('this-month',this)">This Month</button>
         <button class="period-btn"    onclick="setPeriod('last-month',this)">Last Month</button>
@@ -388,7 +388,7 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbwNxbZpAMujaCCV1ppqGKE-
 
 let rawData = null;
 let metric  = 'sales';
-let period  = 'this-week';
+let period  = 'today';
 
 function sub(d, n) { const x = new Date(d); x.setDate(x.getDate() - n); return x; }
 function add(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
@@ -525,6 +525,23 @@ async function load() {
     txt.textContent = 'Live';
     document.getElementById('footerTime').textContent =
       'Updated ' + new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+
+    // Auto-select soonest period with data
+    const periods = ['today','yesterday','this-week','last-week','this-month','last-month','this-year'];
+    const best = periods.find(p => {
+      const [s, e] = dateRange(p);
+      return Object.values(rawData.reps).some(rows =>
+        rows.some(r => inRange(r.sold, s, e))
+      );
+    });
+    if (best && best !== period) {
+      period = best;
+      document.querySelectorAll('.period-btn').forEach(b => {
+        b.classList.toggle('on', b.textContent.trim().toLowerCase().replace(/ /g,'-') === best ||
+          b.getAttribute('onclick').includes("'" + best + "'"));
+      });
+    }
+
     render();
   } catch (err) {
     dot.className = 'dot';
