@@ -530,15 +530,13 @@ async function load() {
     const periods = ['today','yesterday','this-week','last-week','this-month','last-month','this-year'];
     const best = periods.find(p => {
       const [s, e] = dateRange(p);
-      return Object.values(rawData.reps).some(rows =>
-        rows.some(r => inRange(r.sold, s, e))
-      );
+      return Object.values(rawData.reps).some(rows => rows.some(r => inRange(r.sold, s, e)));
     });
-    if (best && best !== period) {
+    if (best) {
       period = best;
       document.querySelectorAll('.period-btn').forEach(b => {
-        b.classList.toggle('on', b.textContent.trim().toLowerCase().replace(/ /g,'-') === best ||
-          b.getAttribute('onclick').includes("'" + best + "'"));
+        const match = b.getAttribute('onclick').includes("'" + best + "'");
+        b.classList.toggle('on', match);
       });
     }
 
