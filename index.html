@@ -430,7 +430,7 @@ function dateRange(p) {
 
 function inRange(str, s, e) {
   if (!str) return false;
-  const d = new Date(str);
+  const d = new Date(str + 'T12:00:00'); // force local noon, avoids UTC midnight shift
   if (isNaN(d)) return false;
   const day = new Date(d.getFullYear(), d.getMonth(), d.getDate());
   return day >= s && day <= e;
